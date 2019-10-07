@@ -69,7 +69,8 @@ class PhoneValidator extends Validator
                 }
                 return true;
             } else {
-                $this->addError($model, $attribute, \Yii::t('app', 'Phone number does not seem to be a valid phone number'));
+                $message = isset($this->message) ? $this->message : \Yii::t('app', 'Phone number does not seem to be a valid phone number');
+                $this->addError($model, $attribute, $message);
                 return false;
             }
         } catch (NumberParseException $e) {
