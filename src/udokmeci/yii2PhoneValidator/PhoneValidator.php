@@ -66,7 +66,7 @@ class PhoneValidator extends Validator
         $phoneUtil = PhoneNumberUtil::getInstance();
         try {
             $numberProto = $phoneUtil->parse($model->$attribute, $country);
-            if ($phoneUtil->isValidNumber($numberProto) && isset($this->type) && $phoneUtil->getNumberType($numberProto) === $this->type) {
+            if ($phoneUtil->isValidNumber($numberProto) && (!isset($this->type) || $phoneUtil->getNumberType($numberProto) === $this->type)) {
                 if (is_numeric($this->format)) {
                     $model->$attribute = $phoneUtil->format($numberProto, $this->format);
                 }
