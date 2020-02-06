@@ -14,6 +14,7 @@ use Exception;
  * Country codes and attributes value should be ISO 3166-1 alpha-2 codes
  * @property string $countryAttribute The country code attribute of model
  * @property string $country The country is fixed
+ * @property string $type (optional) also validate by type (use libphonenumber\PhoneNumberType types, for example libphonenumber\PhoneNumberType::MOBILE to only allow mobile numbers).
  * @property bool $strict If country is not set or selected adds error
  * @property bool $format If phone number is valid formats value with 
  *          libphonenumber/PhoneNumberFormat const (default to INTERNATIONAL)
@@ -24,6 +25,7 @@ class PhoneValidator extends Validator
     public $strict = true;
     public $countryAttribute;
     public $country;
+    public $type;
     public $format = true;
 
     public function validateAttribute($model, $attribute)
@@ -64,7 +66,7 @@ class PhoneValidator extends Validator
         $phoneUtil = PhoneNumberUtil::getInstance();
         try {
             $numberProto = $phoneUtil->parse($model->$attribute, $country);
-            if ($phoneUtil->isValidNumber($numberProto)) {
+            if ($phoneUtil->isValidNumber($numberProto) && isset($this->type) && $phoneUtil->getNumberType($numberProto) === $this->type) {
                 if (is_numeric($this->format)) {
                     $model->$attribute = $phoneUtil->format($numberProto, $this->format);
                 }
